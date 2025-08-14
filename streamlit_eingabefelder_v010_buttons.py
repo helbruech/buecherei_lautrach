@@ -3,6 +3,9 @@ import pandas as pd
 import os
 import requests
 from io import StringIO
+from PIL import Image
+from io import BytesIO
+
 
 def load_original_data():
     url = 'https://raw.githubusercontent.com/helbruech/buecherei_lautrach/refs/heads/main/neuerwerbungen_2025-08-11_new.csv'
@@ -85,9 +88,11 @@ with col1:
     if selected_isbn:
         book = next((b for b in books_list if b["ISBN"] == selected_isbn), None)
         if book:
-            cover_filename = f"cover/cover_{book['ISBN']}.jpg"
-            if os.path.exists(cover_filename):
-                st.image(cover_filename, caption="Buchcover", use_container_width=True)
+            cover_url = "https://portal.dnb.de/opac/mvb/cover?isbn={book['ISBN']}&size=m"
+            response = requests.get(cover_url)
+            if response.status_code == 200:
+                image = Image.open(BytesIO(response.content))
+                st.image(image, caption=f"ISBN: {book['ISBN']}", use_container_width=True)
             else:
                 st.info("Kein Cover vorhanden.")
 
