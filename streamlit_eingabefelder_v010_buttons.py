@@ -88,7 +88,7 @@ with col1:
     if selected_isbn:
         book = next((b for b in books_list if b["ISBN"] == selected_isbn), None)
         if book:
-            cover_url = "https://portal.dnb.de/opac/mvb/cover?isbn={book['ISBN']}&size=m"
+            cover_url = f"https://portal.dnb.de/opac/mvb/cover?isbn={book['ISBN']}&size=m"
             response = requests.get(cover_url)
             if response.status_code == 200:
                 image = Image.open(BytesIO(response.content))
