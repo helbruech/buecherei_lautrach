@@ -1,15 +1,22 @@
 import streamlit as st
 import pandas as pd
 import os
+import requests
+from io import StringIO
+
+def load_original_data():
+    url = 'https://raw.githubusercontent.com/helbruech/buecherei_lautrach/refs/heads/main/neuerwerbungen_2025-08-11_new.csv'
+    response = requests.get(url)
+    if response.status_code == 200:
+        return pd.read_csv(StringIO(response.text))
+    else:
+        st.error("Failed to load data from GitHub.")
+        return None
 
 # --- Initiale Bücherliste nur einmal in Session State laden ---
 if "books_list" not in st.session_state:
-    library = []
-    workdir = "/home/helmut/projekte/buecherei/"
-    isbn_file = "neuerwerbungen_2025-08-11"
-    os.chdir(workdir)
-    df = pd.read_csv(isbn_file + "_new.csv")
-    library = df.to_dict('records')
+    df_csv_data = load_original_data()
+    library = df_csv_data.to_dict('records')
     st.session_state.books_list = library
 
 books_list = st.session_state.books_list
