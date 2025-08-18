@@ -79,6 +79,7 @@ col1, col2 = st.columns(2)
 
 with col1:
     st.subheader("📋 Suchtreffer")
+    st.write(f"Buch {st.session_state.current_book_index} von {len(books_list)}")
 
     # CSV-Speichern-Button
     if st.button("💾 Buchbestand auf Disk speichern"):
